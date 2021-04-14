@@ -26,10 +26,11 @@ jobs:
       - name: Run sbt stage deployHeroku
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          ORDER_CORE_URL: https://dev-kezek-customer-core.herokuapp.com/api
+          ORDER_CORE_URL: https://dev-kezek-order-core.herokuapp.com/api
           LOG_LEVEL: DEBUG
           HOST: 0.0.0.0
           SWAGGER_SCHEMES: https
+          SWAGGER_HOST: dev-kezek-admin-api.herokuapp.com
           ENV: dev
         run: |
           sbt -Denv=dev stage deployHeroku
