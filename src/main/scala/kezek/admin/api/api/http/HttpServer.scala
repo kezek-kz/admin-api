@@ -5,7 +5,7 @@ import akka.actor.CoordinatedShutdown
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.Http
 import com.typesafe.config.{Config, ConfigFactory}
-import kezek.admin.api.client.OrderCoreHttpClient
+import kezek.admin.api.client.{OrderCoreHttpClient, RestaurantCoreHttpClient}
 import kezek.admin.api.swagger.{SwaggerService, SwaggerSite}
 import org.slf4j.{Logger, LoggerFactory}
 
@@ -15,7 +15,8 @@ import scala.util.{Failure, Success}
 
 case class HttpServer()(implicit val actorSystem: ActorSystem[_],
                         implicit val executionContext: ExecutionContext,
-                        implicit val orderCoreHttpClient: OrderCoreHttpClient)
+                        implicit val orderCoreHttpClient: OrderCoreHttpClient,
+                        implicit val restaurantCoreHttpClient: RestaurantCoreHttpClient)
   extends HttpRoutes with SwaggerSite {
 
   implicit val config: Config = ConfigFactory.load()

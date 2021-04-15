@@ -4,7 +4,7 @@ import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import com.typesafe.config.{Config, ConfigFactory}
 import kezek.admin.api.api.http.HttpServer
-import kezek.admin.api.client.OrderCoreHttpClient
+import kezek.admin.api.client.{OrderCoreHttpClient, RestaurantCoreHttpClient}
 
 import scala.concurrent.ExecutionContext
 
@@ -21,6 +21,7 @@ object Main extends App {
   implicit val classicSystem: akka.actor.ActorSystem = system.classicSystem
   implicit val executionContext: ExecutionContext = classicSystem.dispatchers.lookup("akka.dispatchers.main")
 
+  implicit val restaurantCoreHttpClient: RestaurantCoreHttpClient = new RestaurantCoreHttpClient()
   implicit val orderCoreHttpClient: OrderCoreHttpClient = new OrderCoreHttpClient()
 
   HttpServer().start()
