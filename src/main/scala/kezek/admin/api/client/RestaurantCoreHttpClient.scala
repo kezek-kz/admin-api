@@ -103,7 +103,6 @@ class RestaurantCoreHttpClient(implicit val actorSystem: ActorSystem[_],
     }
   }
 
-
   def deleteProduct(id: String): Future[Json] = {
     log.debug("deleteProduct() was called {id: {}}", id)
 
@@ -114,6 +113,7 @@ class RestaurantCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       )
     )
   }
+
 
   def findAllCategories(params: Map[String, String]): Future[Json] = {
     log.debug("findAllCategories() was called {params: {}}", params)

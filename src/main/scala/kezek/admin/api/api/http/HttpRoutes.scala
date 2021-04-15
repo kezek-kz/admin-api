@@ -5,7 +5,7 @@ import akka.http.scaladsl.server.Route
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import kezek.admin.api.api.http.route.{CategoryHttpRoutes, OrderHttpRoutes, ProductHttpRoutes}
+import kezek.admin.api.api.http.route.{CategoryHttpRoutes, OrderHttpRoutes, ProductHttpRoutes, ReservationHttpRoutes, RestaurantMapHttpRoutes}
 
 import javax.ws.rs.{GET, Path}
 
@@ -13,7 +13,9 @@ import javax.ws.rs.{GET, Path}
 trait HttpRoutes
   extends OrderHttpRoutes
     with ProductHttpRoutes
-    with CategoryHttpRoutes {
+    with CategoryHttpRoutes
+    with ReservationHttpRoutes
+    with RestaurantMapHttpRoutes {
 
   val routes: Route =
     pathPrefix("api") {
@@ -21,7 +23,9 @@ trait HttpRoutes
         healthcheck,
         orderHttpRoutes,
         productHttpRoutes,
-        categoryHttpRoutes
+        categoryHttpRoutes,
+        reservationHttpRoutes,
+        restaurantMapHttpRoutes
       )
     }
 
