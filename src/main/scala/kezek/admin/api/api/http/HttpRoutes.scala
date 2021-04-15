@@ -5,19 +5,23 @@ import akka.http.scaladsl.server.Route
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
-import kezek.admin.api.api.http.route.OrderHttpRoutes
+import kezek.admin.api.api.http.route.{CategoryHttpRoutes, OrderHttpRoutes, ProductHttpRoutes}
 
 import javax.ws.rs.{GET, Path}
 
-@Path("/api/v1")
+@Path("/api")
 trait HttpRoutes
-  extends OrderHttpRoutes {
+  extends OrderHttpRoutes
+    with ProductHttpRoutes
+    with CategoryHttpRoutes {
 
   val routes: Route =
-    pathPrefix("api" / "v1") {
+    pathPrefix("api") {
       concat(
         healthcheck,
-        orderHttpRoutes
+        orderHttpRoutes,
+        productHttpRoutes,
+        categoryHttpRoutes
       )
     }
 
