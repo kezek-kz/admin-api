@@ -28,6 +28,7 @@ jobs:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           ORDER_CORE_URL: https://dev-kezek-order-core.herokuapp.com/api
           RESTAURANT_CORE_URL: https://dev-kezek-restaurant-core.herokuapp.com/api
+          RESERVATION_CORE_URL: https://dev-kezek-reservation-core.herokuapp.com/api
           LOG_LEVEL: DEBUG
           HOST: 0.0.0.0
           SWAGGER_SCHEMES: https
