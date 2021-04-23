@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import io.swagger.v3.oas.annotations.{Operation, Parameter}
 import kezek.admin.api.client.RestaurantCoreHttpClient
 import kezek.admin.api.codec.MainCodec
+import kezek.admin.api.domain.dto._
 import kezek.admin.api.swagger.UploadImageMultipartRequest
 import kezek.admin.api.util.HttpUtil
 
@@ -39,41 +40,25 @@ trait ProductHttpRoutes extends MainCodec {
   }
 
   @GET
-  @Operation(
-    summary = "Get product list",
-    description = "Get filtered and paginated product list",
-    method = "GET",
-    parameters = Array(
-      new Parameter(name = "title", in = ParameterIn.QUERY, example = "ba9c3e3e-e593-49d7-b5e5-925cb8fb9b2a"),
-      new Parameter(name = "description", in = ParameterIn.QUERY, example = "ba9c3e3e-e593-49d7-b5e5-925cb8fb9b2a"),
-      new Parameter(name = "category", in = ParameterIn.QUERY, example = "ba9c3e3e-e593-49d7-b5e5-925cb8fb9b2a"),
-      new Parameter(name = "categoryId", in = ParameterIn.QUERY, example = "ba9c3e3e-e593-49d7-b5e5-925cb8fb9b2a"),
-      new Parameter(name = "page", in = ParameterIn.QUERY, example = "1"),
-      new Parameter(name = "pageSize", in = ParameterIn.QUERY, example = "10"),
-      new Parameter(name = "sort", in = ParameterIn.QUERY, example = "+phoneNumber,-firstName")
-    ),
-    responses = Array(
-      new ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = Array(
-          new Content(
-            schema = new Schema(implementation = classOf[Json]),
-            mediaType = "application/json",
-            examples = Array(new ExampleObject(name = "ProductListWithTotalDTO", value = ""))
-          )
-        )
-      ),
-      new ApiResponse(responseCode = "500", description = "Internal server error")
-    )
-  )
+  @Operation(summary = "Get product list", description = "Get filtered and paginated product list")
+  @Parameter(name = "title", in = ParameterIn.QUERY)
+  @Parameter(name = "description", in = ParameterIn.QUERY)
+  @Parameter(name = "categorySlug", in = ParameterIn.QUERY)
+  @Parameter(name = "categorySlugList", in = ParameterIn.QUERY, example = "[slug-1,slug-2]")
+  @Parameter(name = "page", in = ParameterIn.QUERY, example = "1")
+  @Parameter(name = "pageSize", in = ParameterIn.QUERY, example = "10")
+  @Parameter(name = "sort", in = ParameterIn.QUERY, example = "+phoneNumber,-firstName")
+  @ApiResponse(responseCode = "500", description = "Internal server error")
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductListWithTotalDTO]))))
   @Path("/products")
   @Tag(name = "Products")
   def paginateProducts: Route = {
     get {
-    pathEndOrSingleSlash {
-      parameterMap { params =>
-          onComplete(restaurantCoreHttpClient.findAllProducts(params)) {
+      pathEndOrSingleSlash {
+        parameterMap { params =>
+          onComplete {
+            restaurantCoreHttpClient.findAllProducts(params)
+          } {
             case Success(result) => complete(result)
             case Failure(exception) => HttpUtil.completeThrowable(exception)
           }
@@ -83,27 +68,10 @@ trait ProductHttpRoutes extends MainCodec {
   }
 
   @GET
-  @Operation(
-    summary = "Get product by id",
-    description = "Returns a full information about product by id",
-    method = "GET",
-    parameters = Array(
-      new Parameter(name = "id", in = ParameterIn.PATH, example = "", required = true),
-    ),
-    responses = Array(
-      new ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = Array(
-          new Content(
-            schema = new Schema(implementation = classOf[Product]),
-            examples = Array(new ExampleObject(name = "Product", value = ""))
-          )
-        )
-      ),
-      new ApiResponse(responseCode = "500", description = "Internal server error")
-    )
-  )
+  @Operation(summary = "Get product by id", description = "Returns a full information about product by id")
+  @Parameter(name = "id", in = ParameterIn.PATH, example = "", required = true)
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[Product]))))
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}")
   @Tag(name = "Products")
   def getProductById: Route = {
@@ -118,36 +86,10 @@ trait ProductHttpRoutes extends MainCodec {
   }
 
   @POST
-  @Operation(
-    summary = "Create product",
-    description = "Creates new product",
-    method = "POST",
-    requestBody = new RequestBody(
-      content = Array(
-        new Content(
-          schema = new Schema(implementation = classOf[Json]),
-          mediaType = "application/json",
-          examples = Array(
-            new ExampleObject(name = "CreateProductDTO", value = "{\n  \"title\": \"lime\",\n  \"slug\": \"lime\",\n  \"unit\": \"12 pc(s)\",\n  \"price\": 1.5,\n  \"salePrice\": 0,\n  \"discountInPercent\": 0,\n  \"description\": \"The lemon/lime, Citrus limon Osbeck, is a species of small evergreen tree in the flowering plant family Rutaceae, native to South Asia, primarily North eastern India.\",\n  \"type\": \"grocery\",\n  \"image\": \"https://res.cloudinary.com/redq-inc/image/upload/c_fit,q_auto:best,w_300/v1589614568/pickbazar/grocery/GreenLimes_jrodle.jpg\",\n  \"categories\": [\n\t\"id\": \"ba9c3e3e-e593-49d7-b5e5-925cb8fb9b2a\",\n  ]\n}")
-          )
-        )
-      ),
-      required = true
-    ),
-    responses = Array(
-      new ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = Array(
-          new Content(
-            schema = new Schema(implementation = classOf[Product]),
-            examples = Array(new ExampleObject(name = "Product", value = ""))
-          )
-        )
-      ),
-      new ApiResponse(responseCode = "500", description = "Internal server error")
-    )
-  )
+  @Operation(summary = "Create product", description = "Creates new product")
+  @RequestBody(required = true, content = Array(new Content(schema = new Schema(implementation = classOf[CreateProductDTO]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products")
   @Tag(name = "Products")
   def createProduct: Route = {
@@ -164,37 +106,11 @@ trait ProductHttpRoutes extends MainCodec {
   }
 
   @PUT
-  @Operation(
-    summary = "Update product",
-    description = "Updates product",
-    method = "PUT",
-    parameters = Array(
-      new Parameter(name = "id", in = ParameterIn.PATH, example = "", required = true),
-    ),
-    requestBody = new RequestBody(
-      content = Array(
-        new Content(
-          schema = new Schema(implementation = classOf[Json]),
-          mediaType = "application/json",
-          examples = Array(new ExampleObject(name = "UpdateProductDTO", value = ""))
-        )
-      ),
-      required = true
-    ),
-    responses = Array(
-      new ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = Array(
-          new Content(
-            schema = new Schema(implementation = classOf[Product]),
-            examples = Array(new ExampleObject(name = "Product", value = ""))
-          )
-        )
-      ),
-      new ApiResponse(responseCode = "500", description = "Internal server error")
-    )
-  )
+  @Operation(summary = "Update product", description = "Updates product")
+  @Parameter(name = "id", in = ParameterIn.PATH, example = "", required = true)
+  @RequestBody(required = true, content = Array(new Content(schema = new Schema(implementation = classOf[UpdateProductDTO]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}")
   @Tag(name = "Products")
   def updateProduct: Route = {
@@ -211,21 +127,10 @@ trait ProductHttpRoutes extends MainCodec {
   }
 
   @DELETE
-  @Operation(
-    summary = "Deletes product",
-    description = "Deletes product",
-    method = "DELETE",
-    parameters = Array(
-      new Parameter(name = "id", in = ParameterIn.PATH, example = "", required = true),
-    ),
-    responses = Array(
-      new ApiResponse(
-        responseCode = "204",
-        description = "OK",
-      ),
-      new ApiResponse(responseCode = "500", description = "Internal server error")
-    )
-  )
+  @Operation(summary = "Deletes product", description = "Deletes product")
+  @Parameter(name = "id", in = ParameterIn.PATH, required = true)
+  @ApiResponse(responseCode = "204", description = "No content")
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}")
   @Tag(name = "Products")
   def deleteProduct: Route = {
@@ -240,36 +145,11 @@ trait ProductHttpRoutes extends MainCodec {
   }
 
   @POST
-  @Operation(
-    summary = "Upload product image",
-    description = "Uploads product image to s3 and deletes old image",
-    method = "POST",
-    parameters = Array(
-      new Parameter(name = "id", in = ParameterIn.PATH, example = "227564ee-0896-47dc-970a-0d75e1caf71b")
-    ),
-    requestBody = new RequestBody(
-      content = Array(
-        new Content(
-          schema = new Schema(implementation = classOf[UploadImageMultipartRequest]),
-          mediaType = "multipart/form-data"
-        )
-      )
-    ),
-    responses = Array(
-      new ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = Array(
-          new Content(
-            schema = new Schema(implementation = classOf[Json]),
-            examples = Array(new ExampleObject(name = "ProductDTO", value = "")),
-            mediaType = "application/json"
-          )
-        )
-      ),
-      new ApiResponse(responseCode = "500", description = "Internal server error")
-    )
-  )
+  @Operation(summary = "Upload product image", description = "Uploads product image to s3 and deletes old image")
+  @Parameter(name = "id", in = ParameterIn.PATH)
+  @RequestBody(content = Array(new Content(schema = new Schema(implementation = classOf[UploadImageMultipartRequest]), mediaType = "multipart/form-data")))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}/image")
   @Tag(name = "Products")
   def uploadProductImage: Route = {
@@ -290,28 +170,10 @@ trait ProductHttpRoutes extends MainCodec {
   }
 
   @DELETE
-  @Operation(
-    summary = "Delete product image",
-    description = "Deletes product image",
-    method = "DELETE",
-    parameters = Array(
-      new Parameter(name = "id", in = ParameterIn.PATH, example = "227564ee-0896-47dc-970a-0d75e1caf71b"),
-    ),
-    responses = Array(
-      new ApiResponse(
-        responseCode = "200",
-        description = "OK",
-        content = Array(
-          new Content(
-            schema = new Schema(implementation = classOf[Json]),
-            examples = Array(new ExampleObject(name = "ProductDTO", value = "")),
-            mediaType = "application/json"
-          )
-        )
-      ),
-      new ApiResponse(responseCode = "500", description = "Internal server error")
-    )
-  )
+  @Operation(summary = "Delete product image", description = "Deletes product image")
+  @Parameter(name = "id", in = ParameterIn.PATH)
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}/image")
   @Tag(name = "Products")
   def deleteProductImage: Route = {
