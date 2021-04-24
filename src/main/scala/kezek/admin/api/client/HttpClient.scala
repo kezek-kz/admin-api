@@ -22,6 +22,7 @@ trait HttpClient {
     Http().singleRequest(request).flatMap {
       response => {
         Unmarshal(response.entity).to[String].map { jsonString =>
+          log.debug(s"sendRequest() received payload: $jsonString")
           parse(jsonString) match {
             case Right(json) => json
             case Left(error) =>

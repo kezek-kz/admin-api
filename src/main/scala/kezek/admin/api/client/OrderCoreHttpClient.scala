@@ -2,7 +2,7 @@ package kezek.admin.api.client
 
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
-import akka.http.scaladsl.model.{HttpEntity, HttpMethods, HttpRequest, Uri}
+import akka.http.scaladsl.model.{ContentType, HttpEntity, HttpMethods, HttpRequest, MediaTypes, Uri}
 import com.typesafe.config.{Config, ConfigFactory}
 import io.circe.Json
 import org.slf4j.{Logger, LoggerFactory}
@@ -46,7 +46,7 @@ class OrderCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.POST,
         uri = Uri(s"$url/orders"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(MediaTypes.`application/json`, body.noSpaces)
       )
     )
   }
