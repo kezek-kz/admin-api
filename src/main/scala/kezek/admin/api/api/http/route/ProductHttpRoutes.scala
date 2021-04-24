@@ -49,7 +49,7 @@ trait ProductHttpRoutes extends MainCodec {
   @Parameter(name = "pageSize", in = ParameterIn.QUERY, example = "10")
   @Parameter(name = "sort", in = ParameterIn.QUERY, example = "+phoneNumber,-firstName")
   @ApiResponse(responseCode = "500", description = "Internal server error")
-  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductListWithTotalDTO]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[ProductListWithTotalDTO]))))
   @Path("/products")
   @Tag(name = "Products")
   def paginateProducts: Route = {
@@ -70,7 +70,7 @@ trait ProductHttpRoutes extends MainCodec {
   @GET
   @Operation(summary = "Get product by id", description = "Returns a full information about product by id")
   @Parameter(name = "id", in = ParameterIn.PATH, example = "", required = true)
-  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[Product]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[Product]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}")
   @Tag(name = "Products")
@@ -87,8 +87,8 @@ trait ProductHttpRoutes extends MainCodec {
 
   @POST
   @Operation(summary = "Create product", description = "Creates new product")
-  @RequestBody(required = true, content = Array(new Content(schema = new Schema(implementation = classOf[CreateProductDTO]))))
-  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @RequestBody(required = true, content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[CreateProductDTO]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[ProductDTO]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products")
   @Tag(name = "Products")
@@ -108,8 +108,8 @@ trait ProductHttpRoutes extends MainCodec {
   @PUT
   @Operation(summary = "Update product", description = "Updates product")
   @Parameter(name = "id", in = ParameterIn.PATH, example = "", required = true)
-  @RequestBody(required = true, content = Array(new Content(schema = new Schema(implementation = classOf[UpdateProductDTO]))))
-  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @RequestBody(required = true, content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[UpdateProductDTO]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[ProductDTO]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}")
   @Tag(name = "Products")
@@ -148,7 +148,7 @@ trait ProductHttpRoutes extends MainCodec {
   @Operation(summary = "Upload product image", description = "Uploads product image to s3 and deletes old image")
   @Parameter(name = "id", in = ParameterIn.PATH)
   @RequestBody(content = Array(new Content(schema = new Schema(implementation = classOf[UploadImageMultipartRequest]), mediaType = "multipart/form-data")))
-  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[ProductDTO]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}/image")
   @Tag(name = "Products")
@@ -172,7 +172,7 @@ trait ProductHttpRoutes extends MainCodec {
   @DELETE
   @Operation(summary = "Delete product image", description = "Deletes product image")
   @Parameter(name = "id", in = ParameterIn.PATH)
-  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(schema = new Schema(implementation = classOf[ProductDTO]))))
+  @ApiResponse(responseCode = "200", description = "OK", content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[ProductDTO]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/products/{id}/image")
   @Tag(name = "Products")

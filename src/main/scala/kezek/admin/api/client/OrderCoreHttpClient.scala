@@ -63,13 +63,13 @@ class OrderCoreHttpClient(implicit val actorSystem: ActorSystem[_],
     )
   }
 
-  def updateOrderStatus(id: String, body: Json): Future[Json] = {
-    log.debug("updateOrderStatus() was called {id: {}, body: {}}", id, body)
+  def handleOrderEvent(id: String, event: String, body: Json): Future[Json] = {
+    log.debug("handleOrderEvent() was called {id: {}, event: {}, body: {}}", id, event, body)
 
     sendRequest(
       HttpRequest(
-        method = HttpMethods.PUT,
-        uri = Uri(s"$url/orders/$id/status"),
+        method = HttpMethods.POST,
+        uri = Uri(s"$url/orders/$id/$event"),
         entity = HttpEntity(body.noSpaces)
       )
     )

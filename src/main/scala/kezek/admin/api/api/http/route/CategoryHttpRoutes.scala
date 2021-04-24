@@ -42,7 +42,7 @@ trait CategoryHttpRoutes extends MainCodec {
   @Parameter(name = "page", in = ParameterIn.QUERY, example = "1")
   @Parameter(name = "pageSize", in = ParameterIn.QUERY, example = "20")
   @Parameter(name = "sort", in = ParameterIn.QUERY, example = "+title")
-  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(schema = new Schema(implementation = classOf[CategoryListWithTotalDTO]))))
+  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[CategoryListWithTotalDTO]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/categories")
   @Tag(name = "Categories")
@@ -65,7 +65,7 @@ trait CategoryHttpRoutes extends MainCodec {
   @GET
   @Operation(summary = "Get category by slug",description = "Returns category by slug")
   @Parameter(name = "slug", in = ParameterIn.PATH, example = "", required = true)
-  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(schema = new Schema(implementation = classOf[Category]))))
+  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[Category]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/categories/{slug}")
   @Tag(name = "Categories")
@@ -83,7 +83,7 @@ trait CategoryHttpRoutes extends MainCodec {
   @POST
   @Operation(summary = "Create category",description = "Creates new category")
   @RequestBody(
-    content = Array(new Content(schema = new Schema(implementation = classOf[CreateCategoryDTO]),
+    content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[CreateCategoryDTO]),
       examples = Array(
         new ExampleObject(name = "CreateCategoryDTO", value = "{\n  \"title\": \"Fruits & Vegetables\",\n  \"slug\": \"fruits-and-vegetables\"\n}"),
         new ExampleObject(name = "Create Many catergories", value = "[{\n  \"title\": \"Fruits & Vegetables\",\n  \"slug\": \"fruits-and-vegetables\"\n}]")
@@ -92,8 +92,8 @@ trait CategoryHttpRoutes extends MainCodec {
     ),
     required = true
   )
-  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(schema = new Schema(implementation = classOf[Seq[Category]]))))
-  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(schema = new Schema(implementation = classOf[Category]))))
+  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[Seq[Category]]))))
+  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[Category]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/categories")
   @Tag(name = "Categories")
@@ -113,8 +113,8 @@ trait CategoryHttpRoutes extends MainCodec {
   @PUT
   @Operation(summary = "Update category",description = "Updates category")
   @Parameter(name = "slug", in = ParameterIn.PATH, required = true)
-  @RequestBody(required = true,content = Array(new Content(schema = new Schema(implementation = classOf[UpdateCategoryDTO]))))
-  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(schema = new Schema(implementation = classOf[Category]))))
+  @RequestBody(required = true,content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[UpdateCategoryDTO]))))
+  @ApiResponse(responseCode = "200",description = "OK",content = Array(new Content(mediaType = "application/json", schema = new Schema(implementation = classOf[Category]))))
   @ApiResponse(responseCode = "500", description = "Internal server error")
   @Path("/categories/{slug}")
   @Tag(name = "Categories")
