@@ -4,6 +4,8 @@ import akka.Done
 import akka.actor.CoordinatedShutdown
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.Http
+import ch.megard.akka.http.cors.scaladsl.CorsDirectives.cors
+import ch.megard.akka.http.cors.scaladsl.settings.CorsSettings
 import com.typesafe.config.{Config, ConfigFactory}
 import kezek.admin.api.client.{OrderCoreHttpClient, ReservationCoreHttpClient, RestaurantCoreHttpClient}
 import kezek.admin.api.swagger.{SwaggerService, SwaggerSite}
@@ -30,7 +32,9 @@ case class HttpServer()(implicit val actorSystem: ActorSystem[_],
   def start(): Unit =
     Http()
       .newServerAt(interface, port)
-      .bind(concat(routes, swaggerSiteRoute, new SwaggerService().routes))
+      .bind(
+        cors(CorsSettings(config)) { concat (routes, swaggerSiteRoute, new SwaggerService().routes) }
+      )
       .onComplete {
         case Success(binding) =>
           val address = binding.localAddress

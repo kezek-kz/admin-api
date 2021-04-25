@@ -34,6 +34,8 @@ libraryDependencies ++= Seq(
   "io.circe"          %% "circe-bson"           % "0.4.0",
   "joda-time"         % "joda-time"             % "2.10.5",
   "ch.qos.logback"    % "logback-classic"       % "1.2.3" % Runtime,
+  //
+  "ch.megard" %% "akka-http-cors" % "1.1.1"
 )
 
 enablePlugins(JavaAppPackaging)
