@@ -29,7 +29,8 @@ case class HttpServer()(implicit val actorSystem: ActorSystem[_],
   private val port = config.getInt("http-server.port")
   private val interface = config.getString("http-server.interface")
 
-  def start(): Unit =
+  def start(): Unit = {
+    log.debug(s"start() PORT: '$port'")
     Http()
       .newServerAt(interface, port)
       .bind(
@@ -50,5 +51,6 @@ case class HttpServer()(implicit val actorSystem: ActorSystem[_],
           actorSystem.log.error("Failed to bind HTTP endpoint, terminating system", ex)
           actorSystem.terminate()
       }
+  }
 
 }
