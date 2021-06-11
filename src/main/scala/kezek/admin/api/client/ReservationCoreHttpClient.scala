@@ -8,15 +8,16 @@ import akka.stream.scaladsl.Source
 import akka.util.ByteString
 import com.typesafe.config.{Config, ConfigFactory}
 import io.circe.Json
+import org.joda.time.DateTime
 import org.slf4j.{Logger, LoggerFactory}
 
+import scala.collection.{immutable, mutable}
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{ExecutionContext, Future, Promise}
 import scala.util.{Failure, Success}
 
 class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
                                 implicit val executionContext: ExecutionContext) extends HttpClient {
-
 
   private val config: Config = ConfigFactory.load();
   private val url = config.getString("endpoints.reservation-core.url")
@@ -91,61 +92,78 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
     )
   }
 
+  def getAllTables(date: Option[DateTime], bookingTime: Option[String]): Future[Json] = {
+    log.debug("getAllTables() was called {date: {}, bookingTime: {}}", date, bookingTime)
 
-  def getTableById(mapId: String, id: String): Future[Json] = {
+    val params = mutable.Map[String, String]()
+
+    if(date.isDefined)
+      params.put("date", date.get.toString)
+    if(bookingTime.isDefined)
+      params.put("bookingTime", bookingTime.get)
+
+    sendRequest(
+      HttpRequest(
+        method = HttpMethods.GET,
+        uri = Uri(s"$url/tables").withQuery(Query(params.toMap)),
+      )
+    )
+  }
+
+  def getTableById(id: String): Future[Json] = {
     log.debug("getTableById() was called {id: {}}", id)
 
     sendRequest(
       HttpRequest(
         method = HttpMethods.GET,
-        uri = Uri(s"$url/restaurant-map/$mapId/tables/$id"),
+        uri = Uri(s"$url/tables/$id"),
       )
     )
   }
 
-  def createTable(mapId: String, body: Json): Future[Json] = {
+  def createTable(body: Json): Future[Json] = {
     log.debug("createTable() was called {body: {}}", body.noSpaces)
 
     sendRequest(
       HttpRequest(
         method = HttpMethods.POST,
-        uri = Uri(s"$url/restaurant-map/$mapId/tables"),
+        uri = Uri(s"$url/tables"),
         entity = HttpEntity(body.noSpaces)
       )
     )
   }
 
-  def updateTable(mapId: String, id: String, body: Json): Future[Json] = {
+  def updateTable(id: String, body: Json): Future[Json] = {
     log.debug("updateTable() was called {id: {}, body: {}}", id, body)
 
     sendRequest(
       HttpRequest(
         method = HttpMethods.PUT,
-        uri = Uri(s"$url/restaurant-map/$mapId/tables/$id"),
+        uri = Uri(s"$url/tables/$id"),
         entity = HttpEntity(body.noSpaces)
       )
     )
   }
 
-  def deleteTable(mapId: String, id: String): Future[Json] = {
-    log.debug("deleteTable() was called {id: {}}", id)
+//  def deleteTable(id: String): Future[Json] = {
+//    log.debug("deleteTable() was called {id: {}}", id)
+//
+//    sendRequest(
+//      HttpRequest(
+//        method = HttpMethods.DELETE,
+//        uri = Uri(s"$url/tables/$id"),
+//      )
+//    )
+//  }
 
-    sendRequest(
-      HttpRequest(
-        method = HttpMethods.DELETE,
-        uri = Uri(s"$url/restaurant-map/$mapId/tables/$id"),
-      )
-    )
-  }
 
-
-  def getRestaurantMapById(id: String): Future[Json] = {
-    log.debug("getRestaurantMapById() was called {id: {}}", id)
+  def getRestaurantMap: Future[Json] = {
+    log.debug("getRestaurantMap() was called ")
 
     sendRequest(
       HttpRequest(
         method = HttpMethods.GET,
-        uri = Uri(s"$url/restaurant-maps/$id"),
+        uri = Uri(s"$url/restaurant-maps"),
       )
     )
   }
@@ -174,18 +192,5 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       )
     }
   }
-
-  def deleteRestaurantMap(id: String): Future[Json] = {
-    log.debug("deleteRestaurantMap() was called {id: {}}", id)
-
-    sendRequest(
-      HttpRequest(
-        method = HttpMethods.DELETE,
-        uri = Uri(s"$url/restaurant-maps/$id"),
-      )
-    )
-  }
-
-
 
 }
