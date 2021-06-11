@@ -2,7 +2,7 @@ package kezek.admin.api.client
 
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
-import akka.http.scaladsl.model.{HttpEntity, HttpMethods, HttpRequest, Multipart, Uri}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, Multipart, Uri}
 import akka.http.scaladsl.server.directives.FileInfo
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
@@ -52,7 +52,7 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.POST,
         uri = Uri(s"$url/reservations"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
@@ -64,7 +64,7 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.PUT,
         uri = Uri(s"$url/reservations/$id"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
@@ -76,7 +76,7 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.PUT,
         uri = Uri(s"$url/reservations/$id/status"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
@@ -128,7 +128,7 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.POST,
         uri = Uri(s"$url/tables"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
@@ -140,7 +140,7 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.PUT,
         uri = Uri(s"$url/tables/$id"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }

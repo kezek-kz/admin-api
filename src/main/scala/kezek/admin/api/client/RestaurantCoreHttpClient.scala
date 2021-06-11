@@ -2,7 +2,7 @@ package kezek.admin.api.client
 
 import akka.actor.typed.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
-import akka.http.scaladsl.model.{HttpEntity, HttpMethods, HttpRequest, Multipart, Uri}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, Multipart, Uri}
 import akka.http.scaladsl.server.directives.FileInfo
 import akka.stream.scaladsl.Source
 import akka.util.ByteString
@@ -51,7 +51,7 @@ class RestaurantCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.POST,
         uri = Uri(s"$url/products"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
@@ -63,7 +63,7 @@ class RestaurantCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.PUT,
         uri = Uri(s"$url/products/$id"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
@@ -144,7 +144,7 @@ class RestaurantCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.POST,
         uri = Uri(s"$url/categories"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
@@ -156,7 +156,7 @@ class RestaurantCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       HttpRequest(
         method = HttpMethods.PUT,
         uri = Uri(s"$url/categories/$id"),
-        entity = HttpEntity(body.noSpaces)
+        entity = HttpEntity(ContentTypes.`application/json`, body.noSpaces)
       )
     )
   }
