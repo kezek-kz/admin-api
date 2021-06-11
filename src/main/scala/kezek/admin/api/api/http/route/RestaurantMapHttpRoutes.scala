@@ -26,7 +26,7 @@ trait RestaurantMapHttpRoutes extends MainCodec {
 
   def restaurantMapHttpRoutes: Route = {
     concat(
-      pathPrefix("restaurant-maps") {
+      pathPrefix("restaurant-map") {
         concat(
           getRestaurantMap,
           uploadRestaurantMap,
@@ -104,7 +104,7 @@ trait RestaurantMapHttpRoutes extends MainCodec {
       new ApiResponse(responseCode = "500", description = "Internal server error")
     )
   )
-  @Path("/restaurant-maps")
+  @Path("/restaurant-map")
   @Tag(name = "Restaurant Map")
   def uploadRestaurantMap: Route = {
     post {

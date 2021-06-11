@@ -176,7 +176,7 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       val multipartForm = {
         Multipart.FormData(
           Multipart.FormData.BodyPart.Strict(
-            "image",
+            "map",
             httpEntity,
             Map("filename" -> fileInfo.getFileName)
           )
@@ -185,7 +185,7 @@ class ReservationCoreHttpClient(implicit val actorSystem: ActorSystem[_],
       sendRequest(
         HttpRequest(
           method = HttpMethods.POST,
-          uri = Uri(s"$url/reservations"),
+          uri = Uri(s"$url/restaurant-maps"),
           entity =
             multipartForm.toEntity
         )
